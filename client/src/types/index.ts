@@ -51,6 +51,7 @@ export type ServerMessage =
   | { type: "llm.sentence"; sentence: string; index: number }
   | { type: "llm.done"; fullText: string; tElapsedMs: number }
   | { type: "tts.audio"; audioBase64: string; mimeType: string; sentenceIndex: number; tElapsedMs: number }
+  | { type: "tts.local"; text: string; language: SupportedLanguage; sentenceIndex: number; tElapsedMs: number }
   | { type: "tts.done"; sentenceIndex: number }
   | { type: "state"; state: AgentState }
   | { type: "metrics"; metrics: PipelineMetrics }

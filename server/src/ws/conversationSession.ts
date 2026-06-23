@@ -270,6 +270,18 @@ export class ConversationSession {
   ): Promise<void> {
     if (this.isStale(turnId, controller)) return;
     this.setState("speaking");
+
+    if (language === "hi" || language === "hinglish") {
+      this.send({
+        type: "tts.local",
+        text: sentence,
+        language,
+        sentenceIndex: index,
+        tElapsedMs: this.elapsed(),
+      });
+      return;
+    }
+
     const ttsStart = Date.now();
 
     try {

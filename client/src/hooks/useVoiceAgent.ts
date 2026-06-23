@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { VoiceWebSocketClient } from "../services/transport/voiceWebSocketClient";
 import { MicCaptureService } from "../services/audio/micCapture";
 import { TtsPlaybackService } from "../services/tts/ttsPlaybackService";
+import { BrowserTtsService } from "../services/tts/browserTtsService";
 import { AmplitudeGate } from "../utils/amplitudeGate";
 import { generateId } from "../utils/id";
 import { useConversationStore } from "../store/conversationStore";
@@ -26,6 +27,7 @@ export function useVoiceAgent() {
   const wsRef = useRef<VoiceWebSocketClient | null>(null);
   const micRef = useRef<MicCaptureService | null>(null);
   const ttsRef = useRef<TtsPlaybackService | null>(null);
+  const browserTtsRef = useRef<BrowserTtsService | null>(null);
   const ampGateRef = useRef(new AmplitudeGate());
   const isSessionActiveRef = useRef(false);
   const turnStartRef = useRef<number>(0);
@@ -64,6 +66,7 @@ export function useVoiceAgent() {
         s.resetMetrics();
         s.setMetrics({ sttFinalMs: msg.tElapsedMs });
         ttsRef.current?.startNewTurn();
+        browserTtsRef.current?.reset();
         break;
       }
 
@@ -99,6 +102,15 @@ export function useVoiceAgent() {
         void ttsRef.current?.playSentenceAudio(msg.audioBase64, msg.sentenceIndex);
         break;
 
+      case "tts.local":
+        if (s.metrics.ttsFirstAudioMs === undefined) {
+          s.setMetrics({ ...s.metrics, ttsFirstAudioMs: msg.tElapsedMs });
+        }
+        if (msg.language === "hi" || msg.language === "hinglish") {
+          browserTtsRef.current?.enqueue(msg.text, msg.language, msg.sentenceIndex);
+        }
+        break;
+
       case "metrics":
         s.setMetrics(msg.metrics);
         break;
@@ -109,6 +121,7 @@ export function useVoiceAgent() {
 
       case "aborted":
         ttsRef.current?.interrupt();
+        browserTtsRef.current?.stopImmediately();
         break;
 
       default:
@@ -128,6 +141,7 @@ export function useVoiceAgent() {
         // no-op hook point for analytics if needed later
       },
     });
+    browserTtsRef.current = new BrowserTtsService();
 
     const ws = new VoiceWebSocketClient(WS_URL, {
       onMessage: handleServerMessage,
@@ -167,6 +181,7 @@ export function useVoiceAgent() {
 
   const triggerBargeIn = useCallback(() => {
     ttsRef.current?.interrupt();
+    browserTtsRef.current?.stopImmediately();
     wsRef.current?.sendMessage({ type: "barge_in" });
   }, []);
 
@@ -176,9 +191,11 @@ export function useVoiceAgent() {
     wsRef.current?.close();
     micRef.current?.stop();
     ttsRef.current?.destroy();
+    browserTtsRef.current?.stopImmediately();
     wsRef.current = null;
     micRef.current = null;
     ttsRef.current = null;
+    browserTtsRef.current = null;
     useConversationStore.getState().setAgentState("idle");
     useConversationStore.getState().setPartialTranscript("");
   }, []);
