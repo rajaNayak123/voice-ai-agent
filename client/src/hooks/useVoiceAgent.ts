@@ -31,6 +31,7 @@ export function useVoiceAgent() {
   const ampGateRef = useRef(new AmplitudeGate());
   const isSessionActiveRef = useRef(false);
   const turnStartRef = useRef<number>(0);
+  const localTurnStartRef = useRef<number>(0);
 
   const store = useConversationStore();
 
@@ -49,10 +50,16 @@ export function useVoiceAgent() {
         break;
 
       case "stt.partial":
+        if (localTurnStartRef.current === 0) {
+          localTurnStartRef.current = Date.now();
+        }
         s.setPartialTranscript(msg.text);
         break;
 
       case "stt.final": {
+        if (localTurnStartRef.current === 0) {
+          localTurnStartRef.current = Date.now() - msg.tElapsedMs;
+        }
         s.setPartialTranscript("");
         s.setCurrentLanguage(msg.language);
         s.addTurn({
@@ -138,10 +145,18 @@ export function useVoiceAgent() {
     ttsRef.current = new TtsPlaybackService();
     ttsRef.current.setCallbacks({
       onFirstAudio: () => {
-        // no-op hook point for analytics if needed later
+        const elapsed = localTurnStartRef.current > 0 ? Date.now() - localTurnStartRef.current : 0;
+        const s = useConversationStore.getState();
+        s.setMetrics({ ...s.metrics, clientAudioStartMs: elapsed });
       },
     });
-    browserTtsRef.current = new BrowserTtsService();
+    browserTtsRef.current = new BrowserTtsService({
+      onFirstAudio: () => {
+        const elapsed = localTurnStartRef.current > 0 ? Date.now() - localTurnStartRef.current : 0;
+        const s = useConversationStore.getState();
+        s.setMetrics({ ...s.metrics, clientAudioStartMs: elapsed });
+      },
+    });
 
     const ws = new VoiceWebSocketClient(WS_URL, {
       onMessage: handleServerMessage,
@@ -175,6 +190,7 @@ export function useVoiceAgent() {
     });
 
     turnStartRef.current = Date.now();
+    localTurnStartRef.current = 0;
     ws.sendMessage({ type: "audio.start" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleServerMessage]);
@@ -182,6 +198,7 @@ export function useVoiceAgent() {
   const triggerBargeIn = useCallback(() => {
     ttsRef.current?.interrupt();
     browserTtsRef.current?.stopImmediately();
+    localTurnStartRef.current = 0;
     wsRef.current?.sendMessage({ type: "barge_in" });
   }, []);
 
@@ -196,6 +213,7 @@ export function useVoiceAgent() {
     micRef.current = null;
     ttsRef.current = null;
     browserTtsRef.current = null;
+    localTurnStartRef.current = 0;
     useConversationStore.getState().setAgentState("idle");
     useConversationStore.getState().setPartialTranscript("");
   }, []);
