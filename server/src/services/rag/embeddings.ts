@@ -1,35 +1,34 @@
 /**
- * Thin wrapper around LangChain's HuggingFaceInferenceEmbeddings.
+ * In-process embedding generation using @xenova/transformers.
  *
  * We use a multilingual sentence-transformer model
- * (paraphrase-multilingual-MiniLM-L12-v2) so that English, Hindi, and
+ * (Xenova/paraphrase-multilingual-MiniLM-L12-v2) so that English, Hindi, and
  * Hinglish queries all land in a shared embedding space close to their
- * corresponding (English-authored) knowledge base chunks. This is what
- * lets a Hindi/Hinglish question like "NovaDesk ki pricing kya hai?"
- * retrieve the same pricing.txt chunk as the English equivalent.
+ * corresponding (English-authored) knowledge base chunks. This runs
+ * locally in-process without any external network request or API keys.
  */
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
-import { env } from "../../utils/env.js";
+import { pipeline } from "@xenova/transformers";
 import { withRetry } from "../../utils/retry.js";
 import { childLogger } from "../../utils/logger.js";
 
 const log = childLogger("embeddings");
 
-let _embeddings: HuggingFaceInferenceEmbeddings | null = null;
+let extractor: any = null;
 
-export function getEmbeddings(): HuggingFaceInferenceEmbeddings {
-  if (!_embeddings) {
-    _embeddings = new HuggingFaceInferenceEmbeddings({
-      apiKey: env.HUGGINGFACE_API_KEY,
-      model: env.HF_EMBEDDING_MODEL,
-    });
+async function getExtractor() {
+  if (!extractor) {
+    // Load the feature extraction pipeline locally
+    extractor = await pipeline("feature-extraction", "Xenova/paraphrase-multilingual-MiniLM-L12-v2");
   }
-  return _embeddings;
+  return extractor;
 }
 
 export async function embedQuery(text: string): Promise<number[]> {
-  const embeddings = getEmbeddings();
-  return withRetry(() => embeddings.embedQuery(text), {
+  return withRetry(async () => {
+    const ext = await getExtractor();
+    const result = await ext(text, { pooling: "mean", normalize: true });
+    return Array.from(result.data);
+  }, {
     label: "embedQuery",
     retries: 2,
     shouldRetry: (err) => {
@@ -40,8 +39,15 @@ export async function embedQuery(text: string): Promise<number[]> {
 }
 
 export async function embedDocuments(texts: string[]): Promise<number[][]> {
-  const embeddings = getEmbeddings();
-  return withRetry(() => embeddings.embedDocuments(texts), {
+  return withRetry(async () => {
+    const ext = await getExtractor();
+    const results: number[][] = [];
+    for (const text of texts) {
+      const result = await ext(text, { pooling: "mean", normalize: true });
+      results.push(Array.from(result.data));
+    }
+    return results;
+  }, {
     label: "embedDocuments",
     retries: 2,
   });
