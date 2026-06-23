@@ -23,7 +23,10 @@ export async function retrieveRelevantChunks(query: string): Promise<RetrievalRe
       messages: [
         {
           role: "system",
-          content: "You are an assistant that generates alternative search queries for information retrieval. Generate exactly 3 alternative queries, each on a new line. Do not number them. Do not explain them. Do not output anything else."
+          content: "You are an assistant that generates alternative search queries for a customer support knowledge base of NovaDesk (a customer support SaaS company). " +
+                   "NovaDesk offers Starter, Growth, Scale, and Enterprise plans, and features like NovaDesk Inbox (shared inbox), NovaDesk Bot (AI chatbot), and NovaDesk Voice (AI voice support add-on). " +
+                   "Generate exactly 3 alternative search queries in the same language/script style as the user's query (English, Hindi Devanagari, or Hinglish) that would help retrieve the right information from the SaaS knowledge base. " +
+                   "Generate each query on a new line. Do not number them. Do not explain them. Do not output anything else."
         },
         {
           role: "user",
