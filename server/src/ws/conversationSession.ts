@@ -84,10 +84,6 @@ export class ConversationSession {
   }
 
   handleAudioFrame(frame: Buffer): void {
-    // Any incoming audio while the agent is speaking is a barge-in signal.
-    if (this.state === "speaking") {
-      this.handleBargeIn();
-    }
     this.stt?.sendAudio(frame);
   }
 
@@ -101,6 +97,9 @@ export class ConversationSession {
     this.stt = new DeepgramSTTSession({
       onPartial: (chunk) => {
         if (this.turnStartedAt === 0) this.turnStartedAt = Date.now();
+        if (this.state === "speaking" || this.state === "thinking") {
+          this.handleBargeIn();
+        }
         this.setState("listening");
         this.send({
           type: "stt.partial",
