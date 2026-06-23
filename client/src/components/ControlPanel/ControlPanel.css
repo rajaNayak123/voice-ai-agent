@@ -42,7 +42,6 @@
   display: flex;
 }
 
-/* idle */
 .control-panel__orb--idle .control-panel__ring--outer {
   border-color: var(--color-ink-line);
 }
@@ -50,7 +49,6 @@
   color: var(--color-paper-dim);
 }
 
-/* listening: amber, gentle outward pulse */
 .control-panel__orb--listening {
   color: var(--color-amber);
 }
@@ -62,7 +60,6 @@
   border-color: var(--color-amber-dim);
 }
 
-/* thinking: violet, slow rotation on a dashed ring */
 .control-panel__orb--thinking {
   color: var(--color-violet);
 }
@@ -76,7 +73,6 @@
   border-color: var(--color-violet-dim);
 }
 
-/* speaking: teal, steady breathing glow */
 .control-panel__orb--speaking {
   color: var(--color-teal);
 }

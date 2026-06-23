@@ -1,9 +1,4 @@
-/**
- * Renders one conversation turn (user or assistant) as a chat-log style
- * row. Uses monospace for the actual spoken text — this is a transcript,
- * not prose copy, and the mono face reinforces "this is what was
- * literally said/heard" the same way the latency numbers do.
- */
+
 import type { ConversationTurn } from "../../types";
 import "./TranscriptBubble.css";
 

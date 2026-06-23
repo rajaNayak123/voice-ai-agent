@@ -1,8 +1,4 @@
-/**
- * Fallback TTS for Hindi/Hinglish using the browser's native
- * SpeechSynthesis API, since Deepgram Aura has no Hindi voice.
- * Zero cost, zero network round-trip — runs entirely on-device.
- */
+
 export class BrowserTtsService {
   private queue: { text: string; lang: string; index: number }[] = [];
   private speaking = false;
@@ -32,7 +28,7 @@ export class BrowserTtsService {
     }
 
     const utterance = new SpeechSynthesisUtterance(next.text);
-    utterance.lang = "hi-IN"; // works fine for Hinglish too — closest match
+    utterance.lang = "hi-IN"; 
     utterance.rate = 1.0;
 
     utterance.onend = () => {

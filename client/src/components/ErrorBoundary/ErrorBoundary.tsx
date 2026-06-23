@@ -1,9 +1,4 @@
-/**
- * Top-level error boundary. Voice pipelines touch a lot of unreliable
- * browser APIs (mic permissions, AudioWorklet, WebSocket) — if any
- * component throws during render we want a recoverable fallback UI
- * instead of a blank white screen, with a way to reset state and retry.
- */
+
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import "./ErrorBoundary.css";
 
@@ -24,7 +19,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
-    // eslint-disable-next-line no-console
+
     console.error("Unhandled error in component tree:", error, info.componentStack);
   }
 

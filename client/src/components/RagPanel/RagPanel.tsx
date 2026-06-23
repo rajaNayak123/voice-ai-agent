@@ -1,10 +1,4 @@
-/**
- * Shows the knowledge-base chunks retrieved for the most recent query,
- * with their similarity scores and source file. This is a transparency
- * feature: it lets a developer or curious user see exactly what grounded
- * the agent's last answer (or confirm nothing was retrieved, which is
- * why the agent said it didn't have the information).
- */
+
 import type { RetrievedChunk } from "../../types";
 import "./RagPanel.css";
 

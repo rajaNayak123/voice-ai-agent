@@ -1,10 +1,4 @@
-/**
- * Latency telemetry strip: STT latency, LLM first-token time, TTS
- * first-audio time, and total end-to-end latency for the most recent
- * turn. Rendered as a row of labeled mono-numerals — explicitly framed
- * as instrumentation, not a marketing stat, since the brief calls for
- * visible latency metrics as a transparency/debugging feature.
- */
+
 import type { PipelineMetrics } from "../../types";
 import "./LatencyPanel.css";
 

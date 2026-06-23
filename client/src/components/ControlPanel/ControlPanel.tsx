@@ -1,16 +1,4 @@
-/**
- * The signature element of the whole UI: a single circular orb that is
- * the literal control (tap to start/stop a session) and the literal
- * status display (its ring animates differently per agent state). It is
- * the one thing this app should be visually remembered by — everything
- * else in the layout stays quiet by comparison.
- *
- * States:
- *  idle      - static dim ring, "Tap to talk"
- *  listening - ring brightens to amber, fast subtle pulse synced loosely to speech
- *  thinking  - ring rotates slowly in violet (retrieval + LLM generation)
- *  speaking  - ring pulses in teal in sync with an outer glow
- */
+
 import type { AgentState } from "../../types";
 import "./ControlPanel.css";
 

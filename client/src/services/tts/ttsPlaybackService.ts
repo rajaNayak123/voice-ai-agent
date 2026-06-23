@@ -1,10 +1,4 @@
-/**
- * Client-side TTS playback service. Wraps AudioPlaybackQueue (the raw
- * Web Audio mechanics) with the higher-level contract the rest of the
- * app cares about: feed it base64 WAV audio events from the server as
- * they arrive, and it handles decode/queueing/sequential playback,
- * exposing simple lifecycle callbacks for the agent state machine.
- */
+
 import { AudioPlaybackQueue } from "../audio/audioPlaybackQueue";
 
 export class TtsPlaybackService {
@@ -18,12 +12,10 @@ export class TtsPlaybackService {
     await this.queue.enqueueBase64Wav(audioBase64, sentenceIndex);
   }
 
-  /** Barge-in: cut audio immediately. */
   interrupt(): void {
     this.queue.stopImmediately();
   }
 
-  /** Prepare for the next agent turn. */
   startNewTurn(): void {
     this.queue.reset();
   }

@@ -1,16 +1,4 @@
-/**
- * useVoiceAgent — the central orchestration hook that wires together:
- *   - VoiceWebSocketClient (server connection + protocol messages)
- *   - MicCaptureService (mic -> PCM16 frames -> WS)
- *   - TtsPlaybackService (WS audio events -> speaker)
- *   - useConversationStore (all UI-facing state)
- *
- * It exposes a small imperative API (`startSession`, `endSession`,
- * `bargeIn`) and keeps all the WebSocket/audio plumbing out of components.
- * All cancellation goes through AbortController-backed services so a
- * barge-in or unmount can't leave a dangling mic stream, socket, or
- * audio source playing.
- */
+
 import { useCallback, useEffect, useRef } from "react";
 import { VoiceWebSocketClient } from "../services/transport/voiceWebSocketClient";
 import { MicCaptureService } from "../services/audio/micCapture";
@@ -136,7 +124,6 @@ export function useVoiceAgent() {
     }
   }, []);
 
-  /** Begin a session: connect WS, start mic capture, stream frames. */
   const startSession = useCallback(async () => {
     if (isSessionActiveRef.current) return;
     isSessionActiveRef.current = true;
@@ -172,10 +159,6 @@ export function useVoiceAgent() {
       onAudioFrame: (frame) => {
         wsRef.current?.sendAudio(frame);
 
-        // Local fast-path barge-in detection: if the agent is speaking
-        // and we detect speech-like energy in the mic input, stop local
-        // playback immediately (don't wait for the server round-trip)
-        // and tell the server too.
         const state = useConversationStore.getState().agentState;
         if (state === "speaking" || state === "thinking") {
           const int16 = new Int16Array(frame);
@@ -192,7 +175,7 @@ export function useVoiceAgent() {
     turnStartRef.current = Date.now();
     localTurnStartRef.current = 0;
     ws.sendMessage({ type: "audio.start" });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [handleServerMessage]);
 
   const triggerBargeIn = useCallback(() => {
@@ -222,7 +205,7 @@ export function useVoiceAgent() {
     return () => {
       endSession();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   return {

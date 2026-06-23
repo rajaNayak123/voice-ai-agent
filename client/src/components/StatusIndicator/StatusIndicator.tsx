@@ -1,8 +1,4 @@
-/**
- * Small telemetry chips: WebSocket connection status and the detected
- * language of the current/last user utterance. Lives in the header so
- * it's always visible without competing with the central state orb.
- */
+
 import type { ConnectionStatus, SupportedLanguage } from "../../types";
 import "./StatusIndicator.css";
 

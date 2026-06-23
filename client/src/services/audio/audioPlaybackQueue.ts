@@ -1,13 +1,3 @@
-/**
- * Plays back streamed TTS audio chunks (base64 WAV produced per-sentence
- * by Deepgram Aura) using the Web Audio API, queued so sentence N+1
- * starts immediately after sentence N finishes — giving continuous
- * speech even though each sentence's audio arrives as a separate stream.
- *
- * Critically supports `stopImmediately()` for barge-in: when the user
- * starts talking while the agent is speaking, we need playback to cut
- * off within milliseconds, not "after the current buffer finishes".
- */
 
 export class AudioPlaybackQueue {
   private audioContext: AudioContext;
@@ -31,9 +21,6 @@ export class AudioPlaybackQueue {
     this.onFirstAudio = cb.onFirstAudio;
   }
 
-  /** Decode and enqueue a base64-encoded WAV chunk for playback. Sentences may
-   * arrive out of order (synthesis runs concurrently per-sentence on the
-   * server) — we hold each decoded clip until it's its turn by sentenceIndex. */
   async enqueueBase64Wav(base64: string, sentenceIndex: number): Promise<void> {
     if (this.stopped) return;
     if (this.audioContext.state === "suspended") {
@@ -47,8 +34,7 @@ export class AudioPlaybackQueue {
     try {
       decoded = await this.audioContext.decodeAudioData(arrayBuffer);
     } catch {
-      // Malformed/empty audio for this sentence — skip it rather than
-      // stalling the whole queue waiting for an index that will never arrive.
+
       decoded = this.audioContext.createBuffer(1, 1, this.audioContext.sampleRate);
     }
 
@@ -61,7 +47,7 @@ export class AudioPlaybackQueue {
     if (this.isPlaying || this.stopped) return;
     const next = this.pending.get(this.nextIndexToPlay);
     if (!next) {
-      // Either we're caught up and waiting on more audio, or genuinely done.
+
       if (this.pending.size === 0) this.onQueueEmpty?.();
       return;
     }
@@ -88,7 +74,6 @@ export class AudioPlaybackQueue {
     source.start();
   }
 
-  /** Immediately halt playback and drop any queued (not-yet-played) audio. Used for barge-in. */
   stopImmediately(): void {
     this.stopped = true;
     this.pending.clear();
@@ -97,14 +82,13 @@ export class AudioPlaybackQueue {
         this.currentSource.onended = null;
         this.currentSource.stop();
       } catch {
-        /* already stopped */
+
       }
       this.currentSource = null;
     }
     this.isPlaying = false;
   }
 
-  /** Re-arm the queue for the next agent turn after a stop. */
   reset(): void {
     this.stopped = false;
     this.firstAudioPlayed = false;

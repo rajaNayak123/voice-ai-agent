@@ -1,9 +1,3 @@
-/**
- * Shared types for the client. The WebSocket protocol types mirror
- * server/src/types/index.ts exactly — kept as a separate copy (rather
- * than a shared package) to keep this a simple two-folder demo project,
- * but any change to the server protocol must be mirrored here.
- */
 
 export type SupportedLanguage = "en" | "hi" | "hinglish";
 

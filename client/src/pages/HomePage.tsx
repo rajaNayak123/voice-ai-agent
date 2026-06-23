@@ -1,9 +1,4 @@
-/**
- * Main (only) page of the app. Wires useVoiceAgent + selector hooks into
- * the visual layout: header (status), central console (orb + live
- * transcript), conversation feed, and a telemetry footer (latency + RAG
- * grounding panel side by side).
- */
+
 import { useVoiceAgent } from "../hooks/useVoiceAgent";
 import { useConversationHistory } from "../hooks/useConversationHistory";
 import { useLatencyMetrics } from "../hooks/useLatencyMetrics";

@@ -1,11 +1,4 @@
-/**
- * Renders the full conversation feed: finalized turns from history, plus
- * the two "live" in-progress pieces that aren't in history yet — the
- * partial (interim) STT transcript while the user is still speaking, and
- * the streaming LLM response as it's generated token-by-token. Both live
- * pieces render as a lighter/dashed variant of a transcript bubble so
- * it's visually clear they're still in flux.
- */
+
 import { useEffect, useRef } from "react";
 import { TranscriptBubble } from "../TranscriptBubble/TranscriptBubble";
 import type { ConversationTurn } from "../../types";

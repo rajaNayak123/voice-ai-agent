@@ -1,10 +1,4 @@
-/**
- * Thin WebSocket client wrapper handling connect/reconnect lifecycle and
- * typed message send/receive. Reconnects with exponential backoff if the
- * connection drops unexpectedly (not on a clean user-initiated close),
- * since a flaky network mid-conversation shouldn't require the user to
- * manually refresh the page.
- */
+
 import type { ClientMessage, ConnectionStatus, ServerMessage } from "../../types";
 
 export interface VoiceSocketHandlers {
@@ -43,7 +37,7 @@ export class VoiceWebSocketClient {
           const parsed = JSON.parse(event.data) as ServerMessage;
           this.handlers.onMessage(parsed);
         } catch {
-          // ignore malformed frame
+
         }
       }
     };

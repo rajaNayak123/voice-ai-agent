@@ -1,22 +1,4 @@
-/**
- * Captures microphone audio and emits 16kHz PCM16 frames via a callback,
- * ready to be sent straight to Deepgram over the WebSocket.
- *
- * Uses the Web Audio API's AudioWorklet (rather than the deprecated
- * ScriptProcessorNode) for capture, which runs on a dedicated audio
- * thread and avoids blocking/being blocked by the main thread — important
- * for keeping mic capture glitch-free while the UI re-renders streaming
- * transcript/response text.
- */
 
-/**
- * The AudioWorklet module is served as a static asset (see
- * public/worklets/pcm16-worklet.js) rather than imported/bundled. Vite
- * copies everything in /public verbatim to the build output root, so
- * this path is stable in both dev and production. See that file's
- * header comment for why AudioWorklets can't be bundled like a normal
- * ES module import.
- */
 const WORKLET_URL = "/worklets/pcm16-worklet.js";
 
 export interface MicCaptureHandlers {
@@ -55,8 +37,6 @@ export class MicCaptureService {
       };
 
       this.sourceNode.connect(this.workletNode);
-      // Note: we intentionally do NOT connect workletNode -> destination,
-      // since we don't want to play the user's own mic input back to them.
 
       this.isCapturing = true;
     } catch (err) {

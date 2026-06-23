@@ -1,13 +1,3 @@
-/**
- * Reference/documentation copy of the AudioWorklet processor with full
- * TypeScript types. NOT bundled or loaded at runtime — AudioWorklet
- * modules must be fetched as standalone scripts via
- * `audioContext.audioWorklet.addModule(url)` and cannot be bundled
- * inline with the rest of the app. The actual file loaded at runtime is
- * the plain-JS copy at client/public/worklets/pcm16-worklet.js. Keep the
- * two in sync if you change the resampling/encoding logic — see that
- * file's header comment for the full explanation.
- */
 
 class PCM16CaptureProcessor extends AudioWorkletProcessor {
   private inputSampleRate: number;
@@ -17,7 +7,7 @@ class PCM16CaptureProcessor extends AudioWorkletProcessor {
 
   constructor() {
     super();
-    // sampleRate is a global available inside AudioWorkletGlobalScope.
+
     this.inputSampleRate = sampleRate;
     this.resampleRatio = this.inputSampleRate / this.targetSampleRate;
   }

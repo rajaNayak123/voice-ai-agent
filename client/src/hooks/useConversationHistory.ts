@@ -1,10 +1,4 @@
-/**
- * Thin selector hook exposing conversation history plus the
- * currently-in-progress (not yet finalized) turn pieces: the live STT
- * partial transcript and the streaming LLM response. Components that
- * render the conversation feed use this single hook rather than reaching
- * into the store directly in several places.
- */
+
 import { useConversationStore } from "../store/conversationStore";
 
 export function useConversationHistory() {

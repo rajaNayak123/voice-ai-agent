@@ -1,17 +1,6 @@
-/**
- * Design tokens + global styles for NovaVoice.
- *
- * Design direction: a late-night recording-studio console, not a SaaS
- * dashboard. Dark ink background, a single warm accent for the agent's
- * "live" states, monospace for anything that's literally being measured
- * or transcribed (transcripts, latency numbers) and a humanist sans for
- * chrome/labels. The signature element is the central state orb in
- * ControlPanel — everything else stays quiet so that orb reads as the
- * one thing worth looking at while you're mid-conversation.
- */
 
 :root {
-  /* Color */
+
   --color-ink: #14161a;
   --color-ink-raised: #1b1e24;
   --color-ink-line: #2a2e37;
@@ -25,11 +14,9 @@
   --color-violet-dim: #4a4468;
   --color-error: #e2615a;
 
-  /* Type */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
 
-  /* Layout */
   --radius-md: 10px;
   --radius-lg: 18px;
   --radius-full: 999px;
