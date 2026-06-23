@@ -1,0 +1,40 @@
+NovaDesk Company Information
+
+About NovaDesk
+NovaDesk is a customer support and helpdesk platform built for fast-growing teams in India and South Asia. Founded in 2021, NovaDesk helps businesses manage customer conversations across email, chat, and WhatsApp from a single shared inbox.
+
+Headquarters
+NovaDesk is headquartered in Bengaluru, Karnataka, India, with a remote-first engineering team distributed across India.
+
+Mission
+NovaDesk's mission is to make world-class customer support accessible to small and medium businesses by combining automation, AI, and an intuitive shared inbox experience.
+
+Founders
+NovaDesk was founded by Ananya Rao and Vikram Mehta, both former product managers at large SaaS companies, who started the company after experiencing the pain of fragmented customer support tools firsthand.
+
+Products
+NovaDesk offers three core products:
+1. NovaDesk Inbox - a shared team inbox for email and chat support.
+2. NovaDesk Bot - an AI chatbot that can be trained on a company's own knowledge base to answer customer questions automatically.
+3. NovaDesk Voice - a voice support add-on that allows an AI agent to handle phone-based customer queries.
+
+Customers
+NovaDesk serves over 3,000 businesses, primarily in retail, e-commerce, fintech, and SaaS, ranging from early-stage startups to mid-sized enterprises with up to 500 employees.
+
+Office Locations
+NovaDesk has physical offices in Bengaluru and Pune. The Bengaluru office serves as the headquarters, while the Pune office houses part of the customer success and support teams.
+
+Working Hours and Support Availability
+NovaDesk's own customer support team is available Monday to Saturday, 9 AM to 9 PM IST. The NovaDesk Bot product, however, is designed to provide automated support 24 hours a day, 7 days a week.
+
+Company Values
+NovaDesk's stated values are: Customer obsession, Speed over perfection, Transparency in communication, and Building for the long term.
+
+Security and Compliance
+NovaDesk is SOC 2 Type II compliant and stores all customer data on servers located in India, in compliance with Indian data protection guidelines. NovaDesk does not sell customer data to third parties.
+
+Contact Information
+For general inquiries, customers can reach NovaDesk at hello@novadesk.io. For partnership inquiries, the contact is partners@novadesk.io. The main support email is support@novadesk.io.
+
+Careers
+NovaDesk is currently hiring for engineering, customer success, and sales roles. Open positions are listed on the NovaDesk careers page. NovaDesk follows a remote-first hiring policy and hires candidates from anywhere in India.
