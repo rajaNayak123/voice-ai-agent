@@ -56,34 +56,33 @@ export class SentenceDetector {
     this.buffer += token;
     const sentences: string[] = [];
 
+    let searchStart = 0;
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const match = SENTENCE_END_RE.exec(this.buffer);
+      const rest = this.buffer.slice(searchStart);
+      const match = SENTENCE_END_RE.exec(rest);
       if (!match || match.index === undefined) break;
 
-      const candidateEnd = match.index + match[0].length;
+      const matchIndexInBuffer = searchStart + match.index;
+      const candidateEnd = matchIndexInBuffer + match[0].length;
       const candidate = this.buffer.slice(0, candidateEnd).trim();
 
       if (this.isFalsePositive(candidate)) {
         // Skip past this punctuation mark and keep scanning forward
-        // by temporarily masking it isn't trivial with a single regex,
-        // so instead we look for the *next* boundary after this index.
-        const nextSearchStart = candidateEnd;
-        const rest = this.buffer.slice(nextSearchStart);
-        const nextMatch = SENTENCE_END_RE.exec(rest);
-        if (!nextMatch) break;
-        // Recurse by rewriting buffer search start — simplest: break and
-        // wait for more tokens, since false positives are rare mid-stream.
-        break;
+        searchStart = candidateEnd;
+        continue;
       }
 
       if (candidate.length < this.minLen) {
-        // Too short to be a meaningful sentence on its own; wait for more.
-        break;
+        // Too short to be a meaningful sentence on its own; wait for more
+        // by continuing the scan from after this punctuation mark.
+        searchStart = candidateEnd;
+        continue;
       }
 
       sentences.push(candidate);
       this.buffer = this.buffer.slice(candidateEnd).trimStart();
+      searchStart = 0;
     }
 
     // Safety valve: if the model produces a very long run with no
