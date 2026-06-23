@@ -1,0 +1,34 @@
+NovaDesk Pricing
+
+Pricing Philosophy
+NovaDesk prices its plans per agent seat, per month, with discounts available for annual billing. All plans include core shared inbox functionality; higher tiers unlock automation, AI, and advanced reporting features.
+
+Starter Plan
+The Starter plan costs ₹4,999 per agent per month when billed monthly, or ₹3,999 per agent per month when billed annually. The Starter plan includes the shared team inbox, email and live chat channels, up to 3 agent seats, basic reporting, and standard email support from NovaDesk's own team.
+
+Growth Plan
+The Growth plan costs ₹9,999 per agent per month when billed monthly, or ₹7,999 per agent per month when billed annually. The Growth plan includes everything in Starter plus WhatsApp integration, the NovaDesk Bot AI chatbot (trained on up to 3 knowledge base documents), advanced analytics dashboards, and priority email and chat support.
+
+Scale Plan
+The Scale plan costs ₹17,999 per agent per month when billed monthly, or ₹14,999 per agent per month when billed annually. The Scale plan includes everything in Growth plus unlimited knowledge base documents for NovaDesk Bot, custom workflow automation, role-based access control, a dedicated account manager, and a 99.9% uptime SLA.
+
+Enterprise Plan
+Enterprise pricing is custom and based on seat count, usage volume, and required integrations. Enterprise plans include everything in Scale plus single sign-on (SSO), custom data residency options, dedicated infrastructure, and a dedicated solutions engineer. Businesses interested in Enterprise pricing should contact the NovaDesk sales team directly.
+
+NovaDesk Voice Add-on
+NovaDesk Voice, the AI voice support add-on, is priced separately from the core seat-based plans. It costs ₹2 per minute of AI-handled call time, with a minimum monthly commitment of ₹9,999. NovaDesk Voice is available only on the Growth plan and above.
+
+Free Trial
+NovaDesk offers a 14-day free trial on the Growth plan with no credit card required. At the end of the trial, customers can choose to subscribe to any plan or downgrade to a limited free tier with a single agent seat and email support only.
+
+Free Tier
+The Free tier supports 1 agent seat, the email channel only, and basic reporting, with no access to NovaDesk Bot, WhatsApp, or NovaDesk Voice.
+
+Discounts
+NovaDesk offers a 20% discount on annual billing across all paid plans. Registered nonprofits and educational institutions receive an additional 15% discount on top of the annual discount, subject to verification.
+
+Refund Policy
+NovaDesk offers a full refund within the first 14 days of any paid subscription if the customer is not satisfied, no questions asked. After 14 days, subscriptions are non-refundable but can be cancelled at any time to stop future billing.
+
+Payment Methods
+NovaDesk accepts payments via credit card, debit card, UPI, and net banking for customers billed in India. International customers are billed in USD via credit card only.
