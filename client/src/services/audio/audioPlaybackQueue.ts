@@ -101,6 +101,10 @@ export class AudioPlaybackQueue {
     this.isPlaying = false;
   }
 
+  get playing(): boolean {
+    return this.isPlaying;
+  }
+
   reset(): void {
     this.stopped = false;
     this.firstAudioPlayed = false;

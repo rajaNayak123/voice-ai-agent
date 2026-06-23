@@ -4,6 +4,10 @@ import { AudioPlaybackQueue } from "../audio/audioPlaybackQueue";
 export class TtsPlaybackService {
   private queue = new AudioPlaybackQueue();
 
+  get isPlaying(): boolean {
+    return this.queue.playing;
+  }
+
   setCallbacks(cb: { onPlaybackStart?: () => void; onQueueEmpty?: () => void; onFirstAudio?: () => void }): void {
     this.queue.setCallbacks(cb);
   }

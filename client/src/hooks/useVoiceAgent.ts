@@ -160,7 +160,8 @@ export function useVoiceAgent() {
         wsRef.current?.sendAudio(frame);
 
         const state = useConversationStore.getState().agentState;
-        if (state === "speaking" || state === "thinking") {
+        const isTtsPlaying = (ttsRef.current?.isPlaying) || (typeof window !== "undefined" && window.speechSynthesis?.speaking);
+        if ((state === "speaking" || state === "thinking") && !isTtsPlaying) {
           const int16 = new Int16Array(frame);
           if (ampGateRef.current.feed(int16)) {
             triggerBargeIn();

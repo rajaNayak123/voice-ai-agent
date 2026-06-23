@@ -29,6 +29,7 @@ export class ConversationSession {
 
   private turnAbortController: AbortController | null = null;
   private currentTurnId = 0;
+  private assistantSpokenText: string[] = [];
 
   constructor(private readonly ws: WebSocket) {}
 
@@ -68,6 +69,10 @@ export class ConversationSession {
     this.stt = new DeepgramSTTSession({
       onPartial: (chunk) => {
         if (this.turnStartedAt === 0) this.turnStartedAt = Date.now();
+        if (this.isSelfEcho(chunk.text)) {
+          log.info({ text: chunk.text }, "Ignoring partial STT: self-echo detected");
+          return;
+        }
         if (this.state === "speaking" || this.state === "thinking") {
           this.handleBargeIn();
         }
@@ -81,6 +86,10 @@ export class ConversationSession {
       onFinal: (chunk) => {
         const text = chunk.text.trim();
         if (!text) return;
+        if (this.isSelfEcho(text)) {
+          log.info({ text }, "Ignoring final STT: self-echo detected");
+          return;
+        }
         const language = detectLanguage(text, chunk.detectedLanguage);
         this.send({ type: "stt.final", text, language, tElapsedMs: this.elapsed() });
         void this.handleUserUtterance(text, language);
@@ -231,6 +240,11 @@ export class ConversationSession {
     if (this.isStale(turnId, controller)) return;
     this.setState("speaking");
 
+    this.assistantSpokenText.push(sentence);
+    if (this.assistantSpokenText.length > 10) {
+      this.assistantSpokenText.shift();
+    }
+
     if (language === "hi" || language === "hinglish") {
       this.send({
         type: "tts.local",
@@ -307,6 +321,36 @@ export class ConversationSession {
     if (this.ws.readyState === this.ws.OPEN) {
       this.ws.send(JSON.stringify(msg));
     }
+  }
+
+  private isSelfEcho(sttText: string): boolean {
+    const cleanStt = sttText.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'\u0964\u0965]/g, "");
+    if (!cleanStt) return true;
+
+    const sttWords = cleanStt.split(/\s+/).filter((w) => w.length > 0);
+    if (sttWords.length === 0) return true;
+
+    for (const assistantSent of this.assistantSpokenText) {
+      const cleanAsst = assistantSent.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'\u0964\u0965]/g, "");
+      const asstWords = new Set(cleanAsst.split(/\s+/).filter((w) => w.length > 0));
+
+      if (asstWords.size === 0) continue;
+
+      let matchCount = 0;
+      for (const word of sttWords) {
+        if (asstWords.has(word)) {
+          matchCount++;
+        }
+      }
+
+      const ratio = matchCount / sttWords.length;
+      const overlapThreshold = sttWords.length <= 2 ? 1.0 : 0.4;
+      if (ratio >= overlapThreshold) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   teardown(): void {
