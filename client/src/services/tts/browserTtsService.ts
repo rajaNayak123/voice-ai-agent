@@ -7,6 +7,12 @@ export class BrowserTtsService {
   private queue: { text: string; lang: string; index: number }[] = [];
   private speaking = false;
   private stopped = false;
+  private firstAudioPlayed = false;
+  private onFirstAudio?: () => void;
+
+  constructor(callbacks?: { onFirstAudio?: () => void }) {
+    this.onFirstAudio = callbacks?.onFirstAudio;
+  }
 
   enqueue(text: string, lang: "hi" | "hinglish", index: number): void {
     if (this.stopped) return;
@@ -19,6 +25,11 @@ export class BrowserTtsService {
     if (this.speaking || this.stopped || this.queue.length === 0) return;
     const next = this.queue.shift()!;
     this.speaking = true;
+
+    if (!this.firstAudioPlayed) {
+      this.firstAudioPlayed = true;
+      this.onFirstAudio?.();
+    }
 
     const utterance = new SpeechSynthesisUtterance(next.text);
     utterance.lang = "hi-IN"; // works fine for Hinglish too — closest match
@@ -45,5 +56,6 @@ export class BrowserTtsService {
 
   reset(): void {
     this.stopped = false;
+    this.firstAudioPlayed = false;
   }
 }
