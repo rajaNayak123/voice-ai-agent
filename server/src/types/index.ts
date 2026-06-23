@@ -38,6 +38,7 @@ export interface PipelineMetrics {
   llmFirstTokenMs?: number;
   llmTotalMs?: number;
   ttsFirstAudioMs?: number;
+  clientAudioStartMs?: number;
   totalLatencyMs?: number;
 }
 
