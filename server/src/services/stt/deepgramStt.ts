@@ -68,7 +68,7 @@ export class DeepgramSTTSession {
       encoding: "linear16",
       sample_rate: 16000,
       channels: 1,
-      endpointing: 300, // ms of silence before Deepgram finalizes an utterance
+      endpointing: 600, // ms of silence before Deepgram finalizes an utterance
       utterance_end_ms: 1000,
       vad_events: true,
     });
