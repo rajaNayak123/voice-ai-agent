@@ -74,6 +74,11 @@ export class ConversationSession {
           return;
         }
         if (this.state === "speaking" || this.state === "thinking") {
+          const words = chunk.text.trim().split(/\s+/).filter((w) => w.length > 0);
+          if (words.length < 3) {
+            log.info({ text: chunk.text }, "Ignoring partial STT: too short for barge-in");
+            return;
+          }
           this.handleBargeIn();
         }
         this.setState("listening");
@@ -89,6 +94,14 @@ export class ConversationSession {
         if (this.isSelfEcho(text)) {
           log.info({ text }, "Ignoring final STT: self-echo detected");
           return;
+        }
+        if (this.state === "speaking" || this.state === "thinking") {
+          const words = text.split(/\s+/).filter((w) => w.length > 0);
+          if (words.length < 3) {
+            log.info({ text }, "Ignoring final STT: too short for barge-in");
+            return;
+          }
+          this.handleBargeIn();
         }
         const language = detectLanguage(text, chunk.detectedLanguage);
         this.send({ type: "stt.final", text, language, tElapsedMs: this.elapsed() });
