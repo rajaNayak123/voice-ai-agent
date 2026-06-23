@@ -1,0 +1,46 @@
+NovaDesk Frequently Asked Questions
+
+Q: What is NovaDesk?
+A: NovaDesk is a customer support and helpdesk platform that provides a shared inbox, AI chatbot, and AI voice agent so businesses can manage customer conversations across email, chat, WhatsApp, and phone calls in one place.
+
+Q: How do I get started with NovaDesk?
+A: You can sign up for the 14-day free trial on the NovaDesk website with no credit card required. After signing up, you can invite your team, connect your email or chat channels, and start responding to customers immediately.
+
+Q: Can I switch plans later?
+A: Yes, you can upgrade or downgrade your plan at any time from the billing settings page. Upgrades take effect immediately, while downgrades take effect at the start of the next billing cycle.
+
+Q: Does NovaDesk support WhatsApp?
+A: Yes, WhatsApp integration is available starting from the Growth plan. You will need a verified WhatsApp Business Account to connect it to NovaDesk.
+
+Q: How does NovaDesk Bot work?
+A: NovaDesk Bot uses your uploaded knowledge base documents, such as FAQs, product guides, and policy documents, to automatically answer customer questions. It only answers based on the documents you provide and will say it does not have the information if the answer is not found in the knowledge base.
+
+Q: Can NovaDesk Bot speak languages other than English?
+A: Yes, NovaDesk Bot and NovaDesk Voice can understand and respond in English, Hindi, and Hinglish (a mix of Hindi and English), matching the language the customer uses.
+
+Q: What happens if NovaDesk Bot cannot answer a question?
+A: If NovaDesk Bot cannot find a relevant answer in the knowledge base, it will let the customer know it does not have that information and can optionally route the conversation to a human agent.
+
+Q: Is there a setup fee?
+A: No, NovaDesk does not charge any setup fee or onboarding fee on any plan, including Enterprise.
+
+Q: Can I cancel my subscription anytime?
+A: Yes, you can cancel your NovaDesk subscription at any time from the billing settings page. Your plan will remain active until the end of the current billing period.
+
+Q: Does NovaDesk offer a mobile app?
+A: Yes, NovaDesk has mobile apps for both Android and iOS that allow agents to respond to customer conversations on the go.
+
+Q: How many agents can use NovaDesk?
+A: The number of agents depends on your plan. The Starter plan supports up to 3 agent seats, while Growth, Scale, and Enterprise plans support additional seats based on your subscription.
+
+Q: Is my data secure with NovaDesk?
+A: Yes, NovaDesk is SOC 2 Type II compliant, stores data on servers located in India, and does not sell customer data to third parties.
+
+Q: Does NovaDesk integrate with other tools?
+A: NovaDesk integrates with popular tools such as Shopify, Razorpay, Slack, and Zapier, allowing you to connect your support workflow with the rest of your business stack.
+
+Q: What is NovaDesk Voice?
+A: NovaDesk Voice is an AI-powered voice support add-on that allows an AI agent to answer customer phone calls, understand spoken questions in real time, and respond naturally using your knowledge base, available from the Growth plan and above.
+
+Q: Who do I contact for billing issues?
+A: For any billing-related issues, you can email support@novadesk.io or reach out through the in-app chat support widget.
