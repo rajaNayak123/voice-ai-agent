@@ -21,7 +21,10 @@ let _client: Groq | null = null;
 
 function getClient(): Groq {
   if (!_client) {
-    _client = new Groq({ apiKey: env.GROQ_API_KEY });
+    _client = new Groq({
+      apiKey: env.GROQ_API_KEY,
+      fetch: globalThis.fetch,
+    });
   }
   return _client;
 }
