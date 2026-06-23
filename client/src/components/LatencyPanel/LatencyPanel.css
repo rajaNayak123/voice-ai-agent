@@ -1,0 +1,40 @@
+.latency-panel {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  background: var(--color-ink-raised);
+  border: 1px solid var(--color-ink-line);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+}
+
+.latency-panel__row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.latency-panel__label {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-paper-dim);
+}
+
+.latency-panel__value {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-paper);
+}
+
+.latency-panel__row--total .latency-panel__value {
+  color: var(--color-amber);
+}
+
+@media (max-width: 600px) {
+  .latency-panel {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+}
