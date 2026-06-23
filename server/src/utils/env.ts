@@ -25,7 +25,7 @@ const EnvSchema = z.object({
   GROQ_TEMPERATURE: z.coerce.number().default(0.3),
   GROQ_MAX_TOKENS: z.coerce.number().default(400),
 
-  HUGGINGFACE_API_KEY: z.string().min(1, "HUGGINGFACE_API_KEY is required"),
+  HUGGINGFACE_API_KEY: z.string().optional().default(""),
   HF_EMBEDDING_MODEL: z
     .string()
     .default("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"),
