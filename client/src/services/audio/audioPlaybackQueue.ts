@@ -43,35 +43,47 @@ export class AudioPlaybackQueue {
     this.playNextIfIdle();
   }
 
+  private nextStartTime = 0;
+
   private playNextIfIdle(): void {
-    if (this.isPlaying || this.stopped) return;
-    const next = this.pending.get(this.nextIndexToPlay);
-    if (!next) {
+    if (this.stopped) return;
 
-      if (this.pending.size === 0) this.onQueueEmpty?.();
-      return;
+    while (true) {
+      const next = this.pending.get(this.nextIndexToPlay);
+      if (!next) {
+        if (this.pending.size === 0) this.onQueueEmpty?.();
+        break;
+      }
+      this.pending.delete(this.nextIndexToPlay);
+      this.nextIndexToPlay++;
+
+      this.isPlaying = true;
+      if (!this.firstAudioPlayed) {
+        this.firstAudioPlayed = true;
+        this.onFirstAudio?.();
+      }
+      this.onPlaybackStart?.();
+
+      const source = this.audioContext.createBufferSource();
+      source.buffer = next;
+      source.connect(this.audioContext.destination);
+
+      const currentTime = this.audioContext.currentTime;
+      if (this.nextStartTime < currentTime) {
+        this.nextStartTime = currentTime;
+      }
+
+      source.start(this.nextStartTime);
+      this.nextStartTime += next.duration;
+
+      source.onended = () => {
+        if (this.audioContext.currentTime >= this.nextStartTime) {
+          this.isPlaying = false;
+        }
+      };
+      
+      this.currentSource = source;
     }
-    this.pending.delete(this.nextIndexToPlay);
-    this.nextIndexToPlay++;
-
-    this.isPlaying = true;
-    if (!this.firstAudioPlayed) {
-      this.firstAudioPlayed = true;
-      this.onFirstAudio?.();
-    }
-    this.onPlaybackStart?.();
-
-    const source = this.audioContext.createBufferSource();
-    source.buffer = next;
-    source.connect(this.audioContext.destination);
-    source.onended = () => {
-      this.isPlaying = false;
-      this.currentSource = null;
-      if (!this.stopped) this.playNextIfIdle();
-    };
-
-    this.currentSource = source;
-    source.start();
   }
 
   stopImmediately(): void {

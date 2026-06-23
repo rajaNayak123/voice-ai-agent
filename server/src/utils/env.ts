@@ -10,7 +10,7 @@ const EnvSchema = z.object({
 
   DEEPGRAM_API_KEY: z.string().min(1, "DEEPGRAM_API_KEY is required"),
   DEEPGRAM_STT_MODEL: z.string().default("nova-2"),
-  DEEPGRAM_STT_LANGUAGE: z.string().default("multi"),
+  DEEPGRAM_STT_LANGUAGE: z.string().default("hi"),
   DEEPGRAM_TTS_MODEL: z.string().default("aura-asteria-en"),
 
   GROQ_API_KEY: z.string().min(1, "GROQ_API_KEY is required"),

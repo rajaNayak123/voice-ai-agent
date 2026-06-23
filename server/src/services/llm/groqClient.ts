@@ -59,3 +59,18 @@ export async function* streamChatCompletion(
     throw err;
   }
 }
+
+export async function getChatCompletion(opts: { messages: ChatMessage[]; signal?: AbortSignal }): Promise<string> {
+  const client = getClient();
+  const completion = await client.chat.completions.create(
+    {
+      model: env.GROQ_MODEL,
+      messages: opts.messages,
+      temperature: env.GROQ_TEMPERATURE,
+      max_tokens: env.GROQ_MAX_TOKENS,
+    },
+    { signal: opts.signal }
+  );
+  return completion.choices[0]?.message?.content || "";
+}
+
