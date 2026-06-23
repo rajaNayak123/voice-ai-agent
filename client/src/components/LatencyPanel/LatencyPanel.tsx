@@ -20,7 +20,8 @@ export function LatencyPanel({ metrics }: Props) {
   const rows: { label: string; value: string; key: keyof PipelineMetrics }[] = [
     { label: "STT latency", value: fmt(metrics.sttFinalMs), key: "sttFinalMs" },
     { label: "LLM first token", value: fmt(metrics.llmFirstTokenMs), key: "llmFirstTokenMs" },
-    { label: "TTS first audio", value: fmt(metrics.ttsFirstAudioMs), key: "ttsFirstAudioMs" },
+    { label: "TTS server start", value: fmt(metrics.ttsFirstAudioMs), key: "ttsFirstAudioMs" },
+    { label: "Audio play start", value: fmt(metrics.clientAudioStartMs), key: "clientAudioStartMs" },
     { label: "Total latency", value: fmt(metrics.totalLatencyMs), key: "totalLatencyMs" },
   ];
 
