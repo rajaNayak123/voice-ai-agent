@@ -1,0 +1,141 @@
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.control-panel__orb {
+  position: relative;
+  width: 152px;
+  height: 152px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-ink-raised);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-paper-dim);
+  transition: color 0.3s ease, background 0.3s ease;
+}
+
+.control-panel__orb:hover {
+  filter: brightness(1.06);
+}
+
+.control-panel__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--color-ink-line);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.control-panel__ring--inner {
+  inset: 14px;
+}
+
+.control-panel__icon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+}
+
+/* idle */
+.control-panel__orb--idle .control-panel__ring--outer {
+  border-color: var(--color-ink-line);
+}
+.control-panel__orb--idle {
+  color: var(--color-paper-dim);
+}
+
+/* listening: amber, gentle outward pulse */
+.control-panel__orb--listening {
+  color: var(--color-amber);
+}
+.control-panel__orb--listening .control-panel__ring--outer {
+  border-color: var(--color-amber);
+  animation: orb-pulse-amber 1.6s ease-out infinite;
+}
+.control-panel__orb--listening .control-panel__ring--inner {
+  border-color: var(--color-amber-dim);
+}
+
+/* thinking: violet, slow rotation on a dashed ring */
+.control-panel__orb--thinking {
+  color: var(--color-violet);
+}
+.control-panel__orb--thinking .control-panel__ring--outer {
+  border-color: transparent;
+  border-top-color: var(--color-violet);
+  border-right-color: var(--color-violet-dim);
+  animation: orb-spin 1.1s linear infinite;
+}
+.control-panel__orb--thinking .control-panel__ring--inner {
+  border-color: var(--color-violet-dim);
+}
+
+/* speaking: teal, steady breathing glow */
+.control-panel__orb--speaking {
+  color: var(--color-teal);
+}
+.control-panel__orb--speaking .control-panel__ring--outer {
+  border-color: var(--color-teal);
+  animation: orb-breathe 1.4s ease-in-out infinite;
+}
+.control-panel__orb--speaking .control-panel__ring--inner {
+  border-color: var(--color-teal-dim);
+}
+
+@keyframes orb-pulse-amber {
+  0% {
+    box-shadow: 0 0 0 0 rgba(232, 145, 92, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(232, 145, 92, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(232, 145, 92, 0);
+  }
+}
+
+@keyframes orb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orb-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(92, 200, 194, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(92, 200, 194, 0.12);
+    transform: scale(1.015);
+  }
+}
+
+.control-panel__label {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-paper);
+  min-height: 1.2em;
+}
+
+.control-panel__hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-paper-dim);
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 480px) {
+  .control-panel__orb {
+    width: 128px;
+    height: 128px;
+  }
+}
