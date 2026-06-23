@@ -1,15 +1,4 @@
-/**
- * One-off / re-runnable ingestion script for the knowledge base.
- *
- * Run via `npm run ingest` (see package.json). Reads every .txt file in
- * server/knowledge-base/, splits into chunks, embeds them with the
- * HuggingFace multilingual model, and upserts into Qdrant.
- *
- * Safe to re-run: it recreates the collection's points based on a
- * deterministic ID derived from (source, chunkIndex), so re-ingesting
- * after editing a KB file overwrites the old chunks for that file rather
- * than duplicating them.
- */
+
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -69,7 +58,7 @@ async function main() {
   }));
 
   log.info({ count: points.length }, "upserting points into Qdrant");
-  // Batch upserts to avoid overly large requests on bigger knowledge bases.
+
   const BATCH_SIZE = 64;
   for (let i = 0; i < points.length; i += BATCH_SIZE) {
     const batch = points.slice(i, i + BATCH_SIZE);

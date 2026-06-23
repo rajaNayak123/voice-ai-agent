@@ -1,11 +1,4 @@
-/**
- * WebSocket server bootstrap. Each connection gets its own
- * ConversationSession. The protocol multiplexes two kinds of frames on
- * one socket:
- *   - Binary frames: raw PCM16 audio from the mic, forwarded to STT.
- *   - Text frames: JSON-encoded ClientMessage control messages
- *     (session.start, barge_in, etc.)
- */
+
 import { WebSocketServer, type WebSocket } from "ws";
 import type { Server } from "node:http";
 import { ConversationSession } from "./conversationSession.js";

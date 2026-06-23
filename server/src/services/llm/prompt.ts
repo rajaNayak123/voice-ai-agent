@@ -1,18 +1,4 @@
-/**
- * Builds the system + user prompt sent to Groq's Llama 3.1 8B.
- *
- * Two responsibilities are encoded directly into the system prompt:
- *
- * 1. Grounding / anti-hallucination: the model is given ONLY the
- *    retrieved chunks (never the full KB) and is explicitly instructed
- *    to refuse to answer ("I don't have that information in my
- *    knowledge base.") when the provided context doesn't contain the
- *    answer — rather than relying on parametric knowledge to fill gaps.
- *
- * 2. Language matching: the model is told to detect and mirror the
- *    user's language/style (English, Hindi, or Hinglish) rather than
- *    defaulting to English, with the refusal sentence itself localized.
- */
+
 import type { RetrievedChunk, SupportedLanguage } from "../../types/index.js";
 
 export const NOT_FOUND_RESPONSES: Record<SupportedLanguage, string> = {
@@ -58,19 +44,12 @@ export interface ChatMessage {
   content: string;
 }
 
-/**
- * Builds the full message list for a Groq chat completion call, including
- * recent conversation history for short-term context (the agent should
- * remember what was just discussed within the same session) and the
- * grounding system prompt for the current turn.
- */
 export function buildMessages(
   systemPrompt: string,
   history: ChatMessage[],
   userQuery: string
 ): ChatMessage[] {
-  // Keep only the last few turns to control prompt size / latency —
-  // RAG context, not chat history, should drive factual accuracy.
+
   const recentHistory = history.slice(-6);
   return [
     { role: "system", content: systemPrompt },

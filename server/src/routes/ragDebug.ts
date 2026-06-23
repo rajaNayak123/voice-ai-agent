@@ -1,11 +1,4 @@
-/**
- * Debug/testing endpoint to exercise the RAG retriever over plain HTTP
- * without needing a live voice session. Useful for verifying knowledge
- * base ingestion and tuning RAG_SCORE_THRESHOLD / RAG_TOP_K.
- *
- * Not intended for production traffic — the real pipeline runs entirely
- * over the /ws/voice WebSocket.
- */
+
 import { Router } from "express";
 import { z } from "zod";
 import { retrieveRelevantChunks } from "../services/rag/retriever.js";

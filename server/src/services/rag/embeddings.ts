@@ -1,12 +1,4 @@
-/**
- * In-process embedding generation using @xenova/transformers.
- *
- * We use a multilingual sentence-transformer model
- * (Xenova/paraphrase-multilingual-MiniLM-L12-v2) so that English, Hindi, and
- * Hinglish queries all land in a shared embedding space close to their
- * corresponding (English-authored) knowledge base chunks. This runs
- * locally in-process without any external network request or API keys.
- */
+
 import { pipeline } from "@xenova/transformers";
 import { withRetry } from "../../utils/retry.js";
 import { childLogger } from "../../utils/logger.js";
@@ -17,7 +9,7 @@ let extractor: any = null;
 
 async function getExtractor() {
   if (!extractor) {
-    // Load the feature extraction pipeline locally
+
     extractor = await pipeline("feature-extraction", "Xenova/paraphrase-multilingual-MiniLM-L12-v2");
   }
   return extractor;

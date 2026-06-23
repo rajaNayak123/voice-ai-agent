@@ -1,7 +1,4 @@
-/**
- * Server entrypoint: sets up Express (REST: health + RAG debug routes)
- * and attaches the WebSocket voice pipeline to the same HTTP server.
- */
+
 import http from "node:http";
 import express from "express";
 import cors from "cors";

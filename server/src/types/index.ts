@@ -1,18 +1,10 @@
-/**
- * Shared type definitions used across the server: WebSocket protocol
- * messages, RAG results, conversation turns, and pipeline metrics.
- *
- * The WebSocket protocol is a simple discriminated union of JSON
- * messages (`ClientMessage` / `ServerMessage`) plus raw binary audio
- * frames sent by the client for STT ingestion.
- */
 
 export type SupportedLanguage = "en" | "hi" | "hinglish";
 
 export interface TranscriptChunk {
   text: string;
   isFinal: boolean;
-  /** Deepgram's detected language code for this utterance, if available. */
+
   detectedLanguage?: string;
   confidence?: number;
 }
@@ -42,21 +34,12 @@ export interface PipelineMetrics {
   totalLatencyMs?: number;
 }
 
-// --------------------------------------------------------------------------
-// Client -> Server messages (control channel, JSON, sent over the WS text
-// frames interleaved with binary audio frames)
-// --------------------------------------------------------------------------
-
 export type ClientMessage =
   | { type: "session.start"; sessionId: string }
   | { type: "audio.start" }
   | { type: "audio.stop" }
   | { type: "barge_in" }
   | { type: "session.end" };
-
-// --------------------------------------------------------------------------
-// Server -> Client messages
-// --------------------------------------------------------------------------
 
 export type ServerMessage =
   | { type: "session.ready"; sessionId: string }

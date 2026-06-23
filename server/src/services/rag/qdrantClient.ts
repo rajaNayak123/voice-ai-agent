@@ -1,8 +1,4 @@
-/**
- * Qdrant vector database client wrapper. Handles collection
- * creation/verification and exposes thin upsert/search helpers used by
- * the ingestion script and the retriever.
- */
+
 import { QdrantClient } from "@qdrant/js-client-rest";
 import { env } from "../../utils/env.js";
 import { withRetry } from "../../utils/retry.js";
@@ -22,7 +18,6 @@ export function getQdrantClient(): QdrantClient {
   return _client;
 }
 
-/** Ensure the KB collection exists with the right vector size (MiniLM = 384 dims). */
 export async function ensureCollection(vectorSize = 384): Promise<void> {
   const client = getQdrantClient();
   const { collections } = await client.getCollections();

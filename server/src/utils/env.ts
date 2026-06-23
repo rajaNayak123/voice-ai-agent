@@ -1,11 +1,4 @@
-/**
- * Centralized, validated environment configuration.
- *
- * All env access in the codebase should go through this module instead of
- * reading `process.env` directly, so that missing/invalid configuration
- * fails fast at boot with a clear error rather than causing a confusing
- * runtime failure deep inside a streaming pipeline.
- */
+
 import "dotenv/config";
 import { z } from "zod";
 
@@ -45,13 +38,13 @@ export type Env = z.infer<typeof EnvSchema>;
 function loadEnv(): Env {
   const parsed = EnvSchema.safeParse(process.env);
   if (!parsed.success) {
-    // eslint-disable-next-line no-console
+
     console.error("\n❌ Invalid environment configuration:\n");
     for (const issue of parsed.error.issues) {
-      // eslint-disable-next-line no-console
+
       console.error(`  - ${issue.path.join(".")}: ${issue.message}`);
     }
-    // eslint-disable-next-line no-console
+
     console.error("\nCopy server/.env.example to server/.env and fill in the values.\n");
     process.exit(1);
   }

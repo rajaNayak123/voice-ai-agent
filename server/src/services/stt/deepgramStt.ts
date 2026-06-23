@@ -1,19 +1,4 @@
-/**
- * Wraps a single Deepgram streaming STT connection for one user
- * utterance turn.
- *
- * Responsibilities:
- *  - Open a live transcription WebSocket to Deepgram with multilingual
- *    (`language=multi`) detection so English / Hindi / Hinglish speech
- *    all transcribe correctly without the client having to pre-select a
- *    language.
- *  - Forward binary audio frames from the browser straight through.
- *  - Emit partial (interim) and final transcript events with timing info
- *    so the UI can show live captions and we can record STT latency.
- *  - Auto-reconnect with backoff if the upstream socket drops mid-call
- *    (network blip), buffering only a small amount of audio so we don't
- *    lose the user's speech if a reconnect happens mid-sentence.
- */
+
 import { createClient, LiveTranscriptionEvents, type LiveClient } from "@deepgram/sdk";
 import { env } from "../../utils/env.js";
 import { childLogger } from "../../utils/logger.js";
@@ -30,13 +15,6 @@ export interface DeepgramSTTHandlers {
 
 const MAX_RECONNECT_ATTEMPTS = 4;
 
-/**
- * The Deepgram SDK's `LiveClient.send` expects ArrayBuffer | SharedArrayBuffer
- * | Blob, not a Node Buffer. Node Buffers are Uint8Array views over an
- * ArrayBuffer that may be larger than the view itself (pooled allocations),
- * so we must slice to the exact byte range rather than passing `.buffer`
- * directly.
- */
 function toArrayBuffer(buf: Buffer): ArrayBuffer {
   return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
 }
@@ -61,14 +39,14 @@ export class DeepgramSTTSession {
 
     const connection = this.client.listen.live({
       model: env.DEEPGRAM_STT_MODEL,
-      language: env.DEEPGRAM_STT_LANGUAGE, // "multi" => code-switch detection
+      language: env.DEEPGRAM_STT_LANGUAGE, 
       smart_format: true,
       interim_results: true,
       punctuate: true,
       encoding: "linear16",
       sample_rate: 16000,
       channels: 1,
-      endpointing: 600, // ms of silence before Deepgram finalizes an utterance
+      endpointing: 600, 
       utterance_end_ms: 1000,
       vad_events: true,
     });
@@ -76,7 +54,7 @@ export class DeepgramSTTSession {
     connection.on(LiveTranscriptionEvents.Open, () => {
       log.info("Deepgram STT connection open");
       this.reconnectAttempts = 0;
-      // Flush any audio buffered during a reconnect gap.
+
       for (const frame of this.audioBuffer) {
         connection.send(toArrayBuffer(frame));
       }
@@ -131,19 +109,17 @@ export class DeepgramSTTSession {
     setTimeout(() => this.openConnection(), delay);
   }
 
-  /** Send a raw PCM16 audio frame from the browser to Deepgram. */
   sendAudio(frame: Buffer): void {
-    if (this.connection && this.connection.getReadyState() === 1 /* OPEN */) {
+    if (this.connection && this.connection.getReadyState() === 1 ) {
       this.connection.send(toArrayBuffer(frame));
     } else {
-      // Buffer briefly while reconnecting so we don't drop the user's speech.
+
       if (this.audioBuffer.length < this.MAX_BUFFERED_FRAMES) {
         this.audioBuffer.push(frame);
       }
     }
   }
 
-  /** Gracefully end this STT session (e.g. on barge-in or session end). */
   close(): void {
     this.closedByUser = true;
     this.connection?.requestClose();

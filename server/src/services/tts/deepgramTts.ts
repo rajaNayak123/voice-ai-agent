@@ -1,15 +1,4 @@
-/**
- * Streaming text-to-speech via Deepgram Aura.
- *
- * We use Aura's REST streaming endpoint (one call per sentence) rather
- * than a persistent TTS WebSocket: since the pipeline already produces
- * discrete sentence-sized text units (see utils/sentenceDetector.ts),
- * issuing one streaming HTTP request per sentence is simpler to reason
- * about and to cancel (one AbortController per sentence, or one shared
- * controller for the whole turn on barge-in) while still streaming audio
- * back chunk-by-chunk as it's synthesized — Aura starts returning audio
- * bytes well before the full sentence's audio is ready.
- */
+
 import { createClient } from "@deepgram/sdk";
 import { env } from "../../utils/env.js";
 import { childLogger } from "../../utils/logger.js";
@@ -33,12 +22,6 @@ export interface SynthesizeOptions {
   signal?: AbortSignal;
 }
 
-/**
- * Synthesizes one sentence of speech and streams back audio chunks
- * (Buffers) as they're produced. Caller is expected to forward each
- * chunk to the client over the WebSocket immediately (base64-encoded)
- * rather than waiting for the full buffer, to minimize time-to-first-audio.
- */
 export async function* synthesizeSpeechStream(
   opts: SynthesizeOptions
 ): AsyncGenerator<Buffer, void, unknown> {
@@ -65,7 +48,7 @@ export async function* synthesizeSpeechStream(
 
   const reader = stream.getReader();
   try {
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       if (opts.signal?.aborted) {
         log.info("TTS stream aborted by caller (barge-in)");
@@ -80,7 +63,7 @@ export async function* synthesizeSpeechStream(
     try {
       reader.releaseLock();
     } catch {
-      /* already released */
+
     }
   }
 }

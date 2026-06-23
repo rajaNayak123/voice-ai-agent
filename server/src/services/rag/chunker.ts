@@ -1,16 +1,9 @@
-/**
- * Splits raw knowledge-base documents into overlapping chunks suitable
- * for embedding. We use LangChain's RecursiveCharacterTextSplitter, which
- * tries to split on paragraph/sentence boundaries first and only falls
- * back to hard character splits when a paragraph is too long — this
- * keeps each chunk semantically coherent (one chunk rarely straddles two
- * unrelated FAQ entries, for example).
- */
+
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { env } from "../../utils/env.js";
 
 export interface SourceDocument {
-  source: string; // filename, e.g. "pricing.txt"
+  source: string; 
   content: string;
 }
 

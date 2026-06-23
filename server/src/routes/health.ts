@@ -1,8 +1,4 @@
-/**
- * Simple health/readiness endpoint. Checks that downstream dependencies
- * (Qdrant) are reachable so the frontend / ops tooling can distinguish
- * "server up" from "server up but RAG is broken".
- */
+
 import { Router } from "express";
 import { collectionStats } from "../services/rag/qdrantClient.js";
 import { childLogger } from "../utils/logger.js";

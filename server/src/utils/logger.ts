@@ -1,7 +1,4 @@
-/**
- * Shared pino logger instance. Pretty-printed in development, structured
- * JSON in production (for ingestion by log aggregators).
- */
+
 import pino from "pino";
 import { env } from "./env.js";
 

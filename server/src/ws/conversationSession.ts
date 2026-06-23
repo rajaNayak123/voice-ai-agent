@@ -1,24 +1,4 @@
-/**
- * ConversationSession orchestrates the full pipeline for one WebSocket
- * connection (one user "call"):
- *
- *   mic audio -> Deepgram STT -> (on final transcript) RAG retrieval ->
- *   Groq LLM streaming -> sentence detector -> Deepgram TTS streaming ->
- *   audio frames back to client
- *
- * Key design points:
- *
- * - The agent starts speaking the first sentence while the LLM is still
- *   generating later sentences (true streaming pipeline, not
- *   request/response).
- * - Barge-in: if the user starts talking while the agent is speaking, we
- *   immediately abort the in-flight LLM stream and any in-flight TTS
- *   synthesis via a shared AbortController, transition back to
- *   "listening", and let STT keep processing the new utterance. We never
- *   leave a stale generation half-spoken once the user has interrupted.
- * - Every stage is timestamped relative to turn start so the client can
- *   render the latency breakdown (STT/LLM-first-token/TTS-first-audio/total).
- */
+
 import { randomUUID } from "node:crypto";
 import { WebSocket } from "ws";
 import { DeepgramSTTSession } from "../services/stt/deepgramStt.js";
@@ -47,7 +27,6 @@ export class ConversationSession {
   private history: ConversationTurn[] = [];
   private chatHistory: ChatMessage[] = [];
 
-  /** Aborts the current LLM + TTS turn — fresh one created per agent turn. */
   private turnAbortController: AbortController | null = null;
   private currentTurnId = 0;
 
@@ -59,20 +38,16 @@ export class ConversationSession {
     this.setState("idle");
   }
 
-  // ---------------------------------------------------------------------
-  // Inbound message handling
-  // ---------------------------------------------------------------------
-
   handleClientMessage(msg: ClientMessage): void {
     switch (msg.type) {
       case "session.start":
-        // no-op: connection already initialized in start()
+
         break;
       case "audio.start":
         this.setState("listening");
         break;
       case "audio.stop":
-        // Client paused mic; STT will naturally finalize on endpointing.
+
         break;
       case "barge_in":
         this.handleBargeIn();
@@ -86,10 +61,6 @@ export class ConversationSession {
   handleAudioFrame(frame: Buffer): void {
     this.stt?.sendAudio(frame);
   }
-
-  // ---------------------------------------------------------------------
-  // STT wiring
-  // ---------------------------------------------------------------------
 
   private turnStartedAt = 0;
 
@@ -125,10 +96,6 @@ export class ConversationSession {
     this.stt.connect();
   }
 
-  // ---------------------------------------------------------------------
-  // Main turn pipeline: RAG -> LLM -> sentence detector -> TTS
-  // ---------------------------------------------------------------------
-
   private async handleUserUtterance(text: string, language: SupportedLanguage): Promise<void> {
     const turnId = ++this.currentTurnId;
     this.turnAbortController?.abort();
@@ -144,7 +111,7 @@ export class ConversationSession {
     };
 
     try {
-      // ---- RAG retrieval ----
+
       const ragStart = Date.now();
       const { chunks, grounded } = await retrieveRelevantChunks(text);
       metrics.ragRetrievalMs = Date.now() - ragStart;
@@ -156,17 +123,12 @@ export class ConversationSession {
         tElapsedMs: this.elapsed(),
       });
 
-      // ---- Build grounded, language-aware prompt ----
       const systemPrompt = buildSystemPrompt(chunks);
       const messages = buildMessages(systemPrompt, this.chatHistory.slice(0, -1), text);
 
-      // Fast path: nothing relevant retrieved at all -> skip the LLM call
-      // entirely and return the canned not-found response in the user's
-      // language. This guarantees zero hallucination when the KB has no
-      // coverage, and it's also faster than round-tripping to the LLM.
       if (!grounded) {
         const reply = NOT_FOUND_RESPONSES[language];
-        await this.speakReply(reply, language, turnId, controller, metrics, /* fromLlm */ false);
+        await this.speakReply(reply, language, turnId, controller, metrics,  false);
         return;
       }
 
@@ -237,7 +199,6 @@ export class ConversationSession {
     this.setState("idle");
   }
 
-  /** Used for the "not found in KB" fast path, which bypasses the LLM. */
   private async speakReply(
     text: string,
     language: SupportedLanguage,
@@ -284,15 +245,7 @@ export class ConversationSession {
     const ttsStart = Date.now();
 
     try {
-      // We assemble the full audio for this sentence before forwarding it
-      // to the client. This sacrifices nothing on perceived latency for
-      // the *turn* (the agent still starts speaking sentence 1 long before
-      // the LLM finishes generating sentence 3+), while guaranteeing the
-      // client receives one complete, independently-decodable WAV file
-      // per sentence rather than arbitrary raw byte fragments of a
-      // streamed container — which browsers' decodeAudioData cannot
-      // reliably decode piecemeal. Time-to-first-byte from Deepgram is
-      // still what we record as ttsFirstAudioMs.
+
       const chunks: Buffer[] = [];
       let firstChunkAt: number | null = null;
 
@@ -328,10 +281,6 @@ export class ConversationSession {
     }
   }
 
-  // ---------------------------------------------------------------------
-  // Barge-in
-  // ---------------------------------------------------------------------
-
   private handleBargeIn(): void {
     if (this.state !== "speaking" && this.state !== "thinking") return;
     log.info({ sessionId: this.id }, "barge-in detected: aborting current turn");
@@ -340,10 +289,6 @@ export class ConversationSession {
     this.setState("listening");
     this.turnStartedAt = Date.now();
   }
-
-  // ---------------------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------------------
 
   private isStale(turnId: number, controller: AbortController): boolean {
     return controller.signal.aborted || turnId !== this.currentTurnId;

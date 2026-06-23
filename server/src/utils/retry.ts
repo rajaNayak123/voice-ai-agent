@@ -1,12 +1,4 @@
-/**
- * Generic retry helper with exponential backoff + jitter. Used for
- * idempotent network calls (embeddings, vector search, REST calls) where
- * a transient failure shouldn't bubble all the way up to the user.
- *
- * NOT used for streaming connections (WebSocket STT/TTS) — those have
- * their own reconnect logic in services/stt and services/tts because
- * "retry" for a stream means "reconnect and resume", not "redo the call".
- */
+
 import { childLogger } from "./logger.js";
 
 const log = childLogger("retry");
@@ -16,7 +8,7 @@ export interface RetryOptions {
   baseDelayMs?: number;
   maxDelayMs?: number;
   label?: string;
-  /** Return false to stop retrying for a given error (e.g. 4xx client errors). */
+
   shouldRetry?: (err: unknown) => boolean;
 }
 

@@ -1,15 +1,4 @@
-/**
- * Streaming chat completion client for Groq's Llama 3.1 8B Instant model.
- *
- * Groq's LPU inference is dramatically faster than typical GPU-hosted
- * inference for small/medium models — first-token latency is usually
- * well under 200-300ms and token throughput is very high, which is
- * exactly what a "speak before the response finishes" pipeline needs.
- *
- * Streaming is consumed as an async generator so the caller (the
- * WebSocket session orchestrator) can pipe tokens directly into the
- * sentence detector and abort cleanly via AbortController on barge-in.
- */
+
 import Groq from "groq-sdk";
 import { env } from "../../utils/env.js";
 import { childLogger } from "../../utils/logger.js";
@@ -34,12 +23,6 @@ export interface StreamChatOptions {
   signal?: AbortSignal;
 }
 
-/**
- * Streams completion tokens as they arrive from Groq. Yields plain text
- * deltas. Throws (and stops yielding) if the AbortSignal fires —
- * AbortController is wired through from the WS session so barge-in can
- * cancel an in-flight generation immediately.
- */
 export async function* streamChatCompletion(
   opts: StreamChatOptions
 ): AsyncGenerator<string, void, unknown> {
