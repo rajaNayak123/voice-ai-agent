@@ -174,6 +174,9 @@ When the user starts speaking while the agent is mid-response:
    - Causes all "is this turn stale?" checks (`isStale()`) throughout `ConversationSession` to short-circuit pending work instead of sending it to the client.
 4. State transitions back to `listening`, Deepgram STT keeps streaming (it was never stopped), and the next final transcript starts a brand-new turn with a fresh `AbortController`.
 
+> [!NOTE]
+> **Echo Cancellation & Microphone Leakage**: Although browser-level Echo Cancellation (`echoCancellation: true`) is enabled on the client microphone stream, setups without headphones (using speakers) can experience audio leakage at higher volumes. The agent's synthesized voice can feed back into the microphone, exceed the threshold of the client-side `AmplitudeGate` (default `0.02` RMS), and trigger an accidental barge-in. Wearing headphones is recommended for the best experience.
+
 ---
 
 ## Folder structure
